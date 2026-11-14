@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | LifeLink</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">Life<span>Link.</span></a>
+
+    <div class="nav-links">
+        <span>Administrator</span>
+        <button class="btn btn-light" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <h3>Admin Panel</h3>
+        <a href="#overview" class="active">Overview</a>
+        <a href="#verification">Verify Organisations</a>
+        <a href="#allOrganisations">All Organisations</a>
+    </aside>
+
+    <main class="main-content">
+
+        <section id="overview">
+
+            <div class="page-heading">
+                <h1>Admin Dashboard</h1>
+                <p>Manage and monitor LifeLink registrations.</p>
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <p>Total Organisations</p>
+                    <h2 id="adminTotal">0</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Pending Verification</p>
+                    <h2 id="adminPending">0</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Approved Organisations</p>
+                    <h2 id="adminApproved">0</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Total Blood Requests</p>
+                    <h2 id="adminRequests">0</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="verification" class="content-card">
+
+            <h2>Pending Organisation Verification</h2>
+
+            <div id="adminMessage"></div>
+
+            <div id="pendingOrganisations"></div>
+
+        </section>
+
+        <section id="allOrganisations" class="content-card">
+
+            <h2>All Registered Organisations</h2>
+
+            <div id="allOrgTable"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+
+</body>
+</html>
