@@ -145,49 +145,98 @@ function getCurrentUser() {
 // LOGIN
 // ===================================
 
+// const loginForm = document.getElementById("loginForm");
+
+// if (loginForm) {
+
+//     loginForm.addEventListener("submit", function(e) {
+
+//         e.preventDefault();
+
+//         const username = document.getElementById("username").value.trim();
+//         const password = document.getElementById("password").value;
+//         const role = document.getElementById("role").value;
+
+//         const users = getData("users");
+
+//         const user = users.find(function(u) {
+//             return u.username === username &&
+//                    u.password === password &&
+//                    u.role === role;
+//         });
+
+//         const message = document.getElementById("message");
+
+//         if (!user) {
+//             message.innerHTML =
+//                 '<div class="alert alert-error">Invalid username, password or role.</div>';
+//             return;
+//         }
+
+//         localStorage.setItem("currentUser", JSON.stringify(user));
+
+//         if (user.role === "REQUESTER") {
+//             window.location.href = "requester.html";
+//         }
+//         else if (user.role === "ORGANISATION") {
+//             window.location.href = "organisation.html";
+//         }
+//         else if (user.role === "ADMIN") {
+//             window.location.href = "admin.html";
+//         }
+
+//     });
+// }
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
 
-    loginForm.addEventListener("submit", function(e) {
+    loginForm.addEventListener("submit", async function(e) {
 
         e.preventDefault();
 
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
         const role = document.getElementById("role").value;
-
-        const users = getData("users");
-
-        const user = users.find(function(u) {
-            return u.username === username &&
-                   u.password === password &&
-                   u.role === role;
-        });
-
         const message = document.getElementById("message");
 
-        if (!user) {
+        try {
+            const res = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, role })
+            });
+            const data = await res.json();
+
+            if (!data.status) {
+                message.innerHTML =
+                    '<div class="alert alert-error">' + data.message + '</div>';
+                return;
+            }
+
+            // keep this so her other pages (which read currentUser) still work
+            localStorage.setItem("currentUser", JSON.stringify({
+                user_id: data.userId,
+                username: username,
+                role: data.role
+            }));
+
+            if (data.role === "REQUESTER") {
+                window.location.href = "requester.html";
+            }
+            else if (data.role === "ORGANIZATION") {
+                window.location.href = "organization.html";   // check the spelling of the real file
+            }
+            else if (data.role === "ADMIN") {
+                window.location.href = "admin.html";
+            }
+
+        } catch (err) {
             message.innerHTML =
-                '<div class="alert alert-error">Invalid username, password or role.</div>';
-            return;
+                '<div class="alert alert-error">Cannot reach the server.</div>';
         }
-
-        localStorage.setItem("currentUser", JSON.stringify(user));
-
-        if (user.role === "REQUESTER") {
-            window.location.href = "requester.html";
-        }
-        else if (user.role === "ORGANISATION") {
-            window.location.href = "organisation.html";
-        }
-        else if (user.role === "ADMIN") {
-            window.location.href = "admin.html";
-        }
-
     });
 }
-
 
 // ===================================
 // REGISTRATION
@@ -218,73 +267,119 @@ if (regRole) {
 }
 
 
+// const registerForm = document.getElementById("registerForm");
+
+// if (registerForm) {
+
+//     registerForm.addEventListener("submit", function(e) {
+
+//         e.preventDefault();
+
+//         const username = document.getElementById("regUsername").value.trim();
+//         const password = document.getElementById("regPassword").value;
+//         const role = document.getElementById("regRole").value;
+
+//         const users = getData("users");
+
+//         const message = document.getElementById("message");
+
+//         const existing = users.find(function(u) {
+//             return u.username.toLowerCase() === username.toLowerCase();
+//         });
+
+//         if (existing) {
+//             message.innerHTML =
+//                 '<div class="alert alert-error">Username already exists.</div>';
+//             return;
+//         }
+
+//         const newUserId = Math.max(0, ...users.map(u => u.user_id)) + 1;
+
+//         const newUser = {
+//             user_id: newUserId,
+//             username: username,
+//             password: password,
+//             role: role
+//         };
+
+//         users.push(newUser);
+//         saveData("users", users);
+
+//         if (role === "ORGANISATION") {
+
+//             const organisations = getData("organisations");
+
+//             const newOrgId =
+//                 Math.max(0, ...organisations.map(o => o.org_id)) + 1;
+
+//             organisations.push({
+//                 org_id: newOrgId,
+//                 user_id: newUserId,
+//                 org_name: document.getElementById("orgName").value.trim(),
+//                 org_type: document.getElementById("orgType").value,
+//                 city: document.getElementById("orgCity").value.trim(),
+//                 verification_status: "PENDING"
+//             });
+
+//             saveData("organisations", organisations);
+//         }
+
+//         message.innerHTML =
+//             '<div class="alert alert-success">Registration successful! Please login.</div>';
+
+//         registerForm.reset();
+
+//         document.getElementById("organisationFields").classList.add("hidden");
+
+//     });
+// }
 const registerForm = document.getElementById("registerForm");
 
 if (registerForm) {
 
-    registerForm.addEventListener("submit", function(e) {
+    registerForm.addEventListener("submit", async function(e) {
 
         e.preventDefault();
 
         const username = document.getElementById("regUsername").value.trim();
         const password = document.getElementById("regPassword").value;
         const role = document.getElementById("regRole").value;
-
-        const users = getData("users");
-
         const message = document.getElementById("message");
 
-        const existing = users.find(function(u) {
-            return u.username.toLowerCase() === username.toLowerCase();
-        });
-
-        if (existing) {
-            message.innerHTML =
-                '<div class="alert alert-error">Username already exists.</div>';
-            return;
-        }
-
-        const newUserId = Math.max(0, ...users.map(u => u.user_id)) + 1;
-
-        const newUser = {
-            user_id: newUserId,
-            username: username,
-            password: password,
-            role: role
-        };
-
-        users.push(newUser);
-        saveData("users", users);
+        const body = { username, password, role };
 
         if (role === "ORGANISATION") {
-
-            const organisations = getData("organisations");
-
-            const newOrgId =
-                Math.max(0, ...organisations.map(o => o.org_id)) + 1;
-
-            organisations.push({
-                org_id: newOrgId,
-                user_id: newUserId,
-                org_name: document.getElementById("orgName").value.trim(),
-                org_type: document.getElementById("orgType").value,
-                city: document.getElementById("orgCity").value.trim(),
-                verification_status: "PENDING"
-            });
-
-            saveData("organisations", organisations);
+            body.orgName = document.getElementById("orgName").value.trim();
+            body.orgType = document.getElementById("orgType").value;
+            body.city = document.getElementById("orgCity").value.trim();
         }
 
-        message.innerHTML =
-            '<div class="alert alert-success">Registration successful! Please login.</div>';
+        try {
+            const res = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
 
-        registerForm.reset();
+            if (!data.status) {
+                message.innerHTML =
+                    '<div class="alert alert-error">' + data.message + '</div>';
+                return;
+            }
 
-        document.getElementById("organisationFields").classList.add("hidden");
+            message.innerHTML =
+                '<div class="alert alert-success">' + data.message + '</div>';
 
+            registerForm.reset();
+            document.getElementById("organisationFields").classList.add("hidden");
+
+        } catch (err) {
+            message.innerHTML =
+                '<div class="alert alert-error">Cannot reach the server.</div>';
+        }
     });
 }
-
 
 // ===================================
 // LOGOUT
