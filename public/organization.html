@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organisation Dashboard | LifeLink</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="logo">Life<span>Link.</span></a>
+
+    <div class="nav-links">
+        <span id="welcomeOrg">Organisation</span>
+        <button class="btn btn-light" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <h3>Organisation Panel</h3>
+        <a href="#overview" class="active">Overview</a>
+        <a href="#inventory">Blood Inventory</a>
+        <a href="#incoming">Incoming Requests</a>
+    </aside>
+
+    <main class="main-content">
+
+        <section id="overview">
+
+            <div class="page-heading">
+                <h1 id="orgHeading">Organisation Dashboard</h1>
+                <p>Manage your blood inventory and requests.</p>
+            </div>
+
+            <div id="verificationNotice"></div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <p>Total Blood Units</p>
+                    <h2 id="totalUnits">0</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Incoming Requests</p>
+                    <h2 id="incomingCount">0</h2>
+                </div>
+
+                <div class="stat-card">
+                    <p>Accepted Requests</p>
+                    <h2 id="acceptedCount">0</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="inventory" class="content-card">
+
+            <h2>Blood Inventory Management</h2>
+
+            <div id="inventoryMessage"></div>
+
+            <form id="inventoryForm">
+
+                <div class="search-row">
+
+                    <select id="inventoryBlood" required>
+                        <option value="">Blood Group</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select>
+
+                    <input type="number" id="inventoryUnits"
+                           min="0" placeholder="Available units" required>
+
+                    <button class="btn btn-primary" type="submit">
+                        Update Inventory
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div id="inventoryTable"></div>
+
+        </section>
+
+        <section id="incoming" class="content-card">
+
+            <h2>Incoming Blood Requests</h2>
+
+            <div id="incomingRequests"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/organization.js"></script>
+
+</body>
+</html>
