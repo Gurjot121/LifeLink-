@@ -86,7 +86,7 @@ BEGIN
 END //
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS search_blood;
+/*DROP PROCEDURE IF EXISTS search_blood;
 DROP PROCEDURE IF EXISTS pkg_blood_search_blood;
 DELIMITER //
 CREATE PROCEDURE pkg_blood_search_blood(
@@ -104,6 +104,57 @@ BEGIN
       AND o.verification_status = 'APPROVED'
       AND i.units_available > 0
     ORDER BY i.units_available DESC;
+END //
+DELIMITER ;*/
+
+DROP PROCEDURE IF EXISTS search_blood;
+DROP PROCEDURE IF EXISTS pkg_blood_search_blood;
+DELIMITER //
+CREATE PROCEDURE pkg_blood_search_blood(
+    IN p_blood_group_name VARCHAR(5),
+    IN p_city             VARCHAR(50)
+)
+BEGIN
+    DECLARE v_done  INT DEFAULT 0;
+    DECLARE v_org_id   INT;
+    DECLARE v_org_name VARCHAR(100);
+    DECLARE v_org_type VARCHAR(20);
+    DECLARE v_city     VARCHAR(50);
+    DECLARE v_group    VARCHAR(5);
+    DECLARE v_units    INT;
+
+    DECLARE org_cursor CURSOR FOR
+        SELECT o.org_id, o.org_name, o.org_type, o.city,
+               b.blood_group_name, i.units_available
+        FROM INVENTORY i
+        JOIN ORGANISATIONS o ON i.org_id = o.org_id
+        JOIN BLOOD_GROUPS  b ON i.blood_group_id = b.blood_group_id
+        WHERE b.blood_group_name = p_blood_group_name
+          AND o.city = p_city
+          AND o.verification_status = 'APPROVED'
+          AND i.units_available > 0
+        ORDER BY i.units_available DESC;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = 1;
+
+    DROP TEMPORARY TABLE IF EXISTS tmp_search_results;
+    CREATE TEMPORARY TABLE tmp_search_results (
+        org_id INT, org_name VARCHAR(100), org_type VARCHAR(20),
+        city VARCHAR(50), blood_group_name VARCHAR(5), units_available INT
+    );
+
+    OPEN org_cursor;
+    read_loop: LOOP
+        FETCH org_cursor INTO v_org_id, v_org_name, v_org_type, v_city, v_group, v_units;
+        IF v_done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+        INSERT INTO tmp_search_results
+        VALUES (v_org_id, v_org_name, v_org_type, v_city, v_group, v_units);
+    END LOOP;
+    CLOSE org_cursor;
+
+    SELECT * FROM tmp_search_results ORDER BY units_available DESC;
 END //
 DELIMITER ;
 
