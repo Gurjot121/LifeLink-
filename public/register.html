@@ -1,7 +1,6 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,87 +10,120 @@
 
 <body>
 
-<nav class="navbar">
-    <a href="index.html" class="logo">Life<span>Link.</span></a>
-    <a href="login.html" class="btn btn-light">Login</a>
-</nav>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Life<span>Link.</span></a>
+        <a href="login.html" class="btn btn-light">Login</a>
+    </nav>
 
-<div class="auth-wrapper">
+    <div class="auth-wrapper">
 
-    <div class="auth-card">
+        <div class="auth-card">
 
-        <h2>Create Account</h2>
-        <p>Join the LifeLink network.</p>
+            <h2>Create Account</h2>
+            <p>Join the LifeLink network.</p>
 
-        <div id="message"></div>
+            <div id="message"></div>
 
-        <form id="registerForm">
-
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="regUsername"
-                       placeholder="Choose username" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="regPassword"
-                       placeholder="Create password" required minlength="6">
-            </div>
-
-            <div class="form-group">
-                <label>Register As</label>
-                <select id="regRole" required>
-                    <option value="">Select account type</option>
-                    <option value="REQUESTER">Requester</option>
-                    <option value="ORGANISATION">Organisation</option>
-                </select>
-            </div>
-
-            <div id="organisationFields" class="hidden">
+            <form id="registerForm">
 
                 <div class="form-group">
-                    <label>Organisation Name</label>
-                    <input type="text" id="orgName"
-                           placeholder="Enter organisation name">
+                    <label>Email ID</label>
+                    <input type="email" id="regUsername" placeholder="name@example.com" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Organisation Type</label>
-                    <select id="orgType">
-                        <option value="">Select type</option>
-                        <option value="NGO">NGO</option>
-                        <option value="HOSPITAL">Hospital</option>
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="Create password" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label>Register As</label>
+                    <select id="regRole" required>
+                        <option value="">Select account type</option>
+                        <option value="REQUESTER">Requester</option>
+                        <option value="ORGANISATION">Organisation</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label>City</label>
-                    <input type="text" id="orgCity"
-                           placeholder="Enter city">
+                <div id="organisationFields" class="hidden">
+
+                    <div class="form-group">
+                        <label>Organisation Name</label>
+                        <input type="text" id="orgName" placeholder="Enter organisation name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Organisation Type</label>
+                        <select id="orgType">
+                            <option value="">Select type</option>
+                            <option value="NGO">NGO</option>
+                            <option value="HOSPITAL">Hospital</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="orgCity" placeholder="Enter city">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Area</label>
+                        <input type="text" id="orgArea" placeholder="Enter area">
+                    </div>
+
+                    <!-- pic upload -->
+                    <div class="form-group">
+                        <label>Registration Proof Pic</label>
+                        <input type="file" id="proofpic" accept="image/*">
+                        <img id="preview" width="200" style="display:none;">
+                    </div>
+
+
                 </div>
 
-            </div>
+                <button type="submit" class="btn btn-primary full-width">
+                    Create Account
+                </button>
 
-            <button type="submit" class="btn btn-primary full-width">
-                Create Account
-            </button>
+            </form>
 
-        </form>
+            <p style="text-align:center; margin-top:20px;">
+                Already registered?
+                <a href="login.html" style="color:#9F1D35;font-weight:700;">
+                    Login
+                </a>
+            </p>
 
-        <p style="text-align:center; margin-top:20px;">
-            Already registered?
-            <a href="login.html" style="color:#9F1D35;font-weight:700;">
-                Login
-            </a>
-        </p>
+        </div>
 
     </div>
 
-</div>
+    <script src="js/login.js"></script>
 
-<script src="js/login.js"></script>
+    <script>
+        document.getElementById("proofpic").addEventListener("change", function () {
+
+            let file = this.files[0];
+
+            if (file) {
+
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+
+                    let preview = document.getElementById("preview");
+
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+
+                };
+                reader.readAsDataURL(file);
+            }
+
+        });
+
+    </script>
 
 </body>
-</html>
 
+</html>
