@@ -78,3 +78,16 @@ CREATE TABLE REQUEST_RESPONSES (
 ALTER TABLE BLOOD_REQUESTS
 ADD FOREIGN KEY (selected_response_id)
 REFERENCES REQUEST_RESPONSES(response_id);
+
+DROP TRIGGER IF EXISTS trg_inventory_no_negative;
+DELIMITER //
+CREATE TRIGGER trg_inventory_no_negative
+BEFORE UPDATE ON INVENTORY
+FOR EACH ROW
+BEGIN
+    IF NEW.units_available < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 20031,
+            MESSAGE_TEXT = 'Stock cannot go below zero.';
+    END IF;
+END //
+DELIMITER ;
