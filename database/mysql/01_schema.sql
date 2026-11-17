@@ -19,7 +19,7 @@ CREATE TABLE ORGANISATIONS (
     city VARCHAR(50) NOT NULL,
     verification_status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     FOREIGN KEY (user_id) REFERENCES USERS(user_id),
-    CHECK (org_type IN ('NGO', 'HOSPITAL')),
+    CHECK (org_type IN ('NGO', 'HOSPITAL','Blood Bank')),
     CHECK (verification_status IN ('PENDING', 'APPROVED', 'REJECTED'))
 );
 
